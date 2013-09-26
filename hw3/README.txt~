@@ -1,0 +1,12 @@
+These project files contain those for hw2.
+
+
+In the folder TempSensor you will find the files related to waiting for an interrupt from GPIO pin 30 in order to read the temperature register (0) from i2c address 0x49
+
+In the folder LED_Matrix, you will find the necessary LED matrix code
+
+
+
+
+
+
