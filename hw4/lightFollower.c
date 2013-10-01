@@ -131,10 +131,8 @@ int main(int argc, char *argv[]){
 		controlGPIOs[2] = 26;
 		controlGPIOs[3] = 46;
 	//setup Analog IO's
-	system("SLOTS=/sys/devices/bone_capemgr.*/slots");
-	system("PINS=/sys/kernel/debug/pinctrl/44e10800.pinmux/pins");
-	system("echo cape-bone-iio > $SLOTS");
-
+	system("./analogInSetup.sh");
+	
 	int i, k, samples[20], min, toggle, minIndex, contine, counter, minFound;
 	minFound = 0;
 	min = 99999;
@@ -162,10 +160,11 @@ while(contine){
 		for(i=0; i<5; i++){
 			for(k=0; k<4; k++){
 				rotateClock(k);
-				samples[counter] = analogIn(ain[0])+analogIn(ain[1]);
+				samples[counter] = analogIn(ain[0])+analogIn(ain[1]);			
 				if(min>samples[counter]){
 				minIndex=counter;min=samples[counter];}
 				counter++;
+				
 			}
 		}
 		
@@ -189,20 +188,20 @@ while(contine){
 	//Track light source
 	if(minFound == 1){
 		//Moving Left and Right
-		if((analogIn(ain[0])-analogIn(ain[1])>150)){
+		printf("Ain[0] =%d\tAin[1]=%d\n",  analogIn(ain[0]), analogIn(ain[1]) );
+		if( analogIn(ain[0]) < analogIn(ain[1]) ) {
 			rotateClock(0);
 			rotateClock(1);
 			rotateClock(2);
 			rotateClock(3);
-			printf("Should move Clockwise");
-		}else if((analogIn(ain[0])-analogIn(ain[1])<-150)){
+			printf("Should move Clockwise\n");
+		} else {
 			rotateClock(3);
 			rotateClock(2);
 			rotateClock(1);
 			rotateClock(0);
-			printf("Should move Counterclockwise");
+			printf("Should move Counterclockwise\n");
 		}
-		//printf("Ain[0] =%d\nAin[1]=%d",  analogIn(ain[0]), analogIn(ain[1]) );
 		fflush(stdout);
 		usleep(2000000);
 	}
