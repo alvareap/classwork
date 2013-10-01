@@ -126,11 +126,15 @@ void rotateClock (int current){
 
 //MAIN function.
 int main(int argc, char *argv[]){
-		controlGPIOs[0] = 30;
-		controlGPIOs[1] = 31;
-		controlGPIOs[2] = 48;
-		controlGPIOs[3] = 51;
-	
+		controlGPIOs[0] = 23;
+		controlGPIOs[1] = 47;
+		controlGPIOs[2] = 26;
+		controlGPIOs[3] = 46;
+	//setup Analog IO's
+	system("SLOTS=/sys/devices/bone_capemgr.*/slots");
+	system("PINS=/sys/kernel/debug/pinctrl/44e10800.pinmux/pins");
+	system("echo cape-bone-iio > $SLOTS");
+
 	int i, k, samples[20], min, toggle, minIndex, contine, counter, minFound;
 	minFound = 0;
 	min = 99999;
@@ -140,7 +144,7 @@ int main(int argc, char *argv[]){
 		printf("Fewers than 2 arguments detected: using default values.\n");
 		ain[0] = '0';
 		ain[1] = '1';
-		controlGPIOs[4] = 14;
+		controlGPIOs[4] = 65;
 	}else{
 		ain[0] = argv[2][0];
 		ain[1] = argv[3][0];
@@ -179,7 +183,7 @@ while(contine){
 			rotateClock(3-i);
 			counter++;
 		}
-		printf("%d\n", counter);
+		printf("here%d\n", counter);
 		minFound = 1;
 	}
 	//Track light source
@@ -198,6 +202,7 @@ while(contine){
 			rotateClock(0);
 			printf("Should move Counterclockwise");
 		}
+		//printf("Ain[0] =%d\nAin[1]=%d",  analogIn(ain[0]), analogIn(ain[1]) );
 		fflush(stdout);
 		usleep(2000000);
 	}
