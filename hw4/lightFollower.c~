@@ -189,7 +189,7 @@ while(contine){
 	if(minFound == 1){
 		//Moving Left and Right
 		printf("Ain[0] =%d\tAin[1]=%d\n",  analogIn(ain[0]), analogIn(ain[1]) );
-		if( (analogIn(ain[0]) ) > analogIn(ain[1]) ) {
+		if( analogIn(ain[0]) < analogIn(ain[1]) ) {
 			rotateClock(0);
 			rotateClock(1);
 			rotateClock(2);
