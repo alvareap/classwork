@@ -7,8 +7,8 @@
 #include<unistd.h>
 
 
-#define BOARD_HEIGHT	8
-#define BOARD_WIDTH	8
+#define BOARD_HEIGHT	50
+#define BOARD_WIDTH	50
 
 
 int etchBoard[BOARD_HEIGHT][BOARD_WIDTH] = { {0} };
