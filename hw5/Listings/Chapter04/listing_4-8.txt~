@@ -1,0 +1,48 @@
+# Snippet from .../arch/arm/Kconfig
+# This configures specilized hardware per board that need to be initialzed during the kernel boot phase 
+
+...
+source "init/Kconfig"
+
+source "kernel/Kconfig.freezer"
+
+menu "System Type"
+
+config MMU
+	bool "MMU-based Paged Memory Management Support"
+	default y
+	help
+	  Select if you want MMU-based virtualised addressing space
+	  support by paged memory management. If unsure, say 'Y'.
+
+#
+# The "ARM system type" choice list is ordered alphabetically by option
+# text.  Please add new entries in the option alphabetic order.
+#
+choice
+	prompt "ARM system type"
+	default ARCH_MULTIPLATFORM
+
+...
+config ARCH_OMAP
+	bool "TI OMAP"
+	depends on MMU
+	select ARCH_HAS_CPUFREQ
+	select ARCH_HAS_HOLES_MEMORYMODEL
+	select ARCH_REQUIRE_GPIOLIB
+	select CLKSRC_MMIO
+	select GENERIC_CLOCKEVENTS
+	select HAVE_CLK
+	help
+	  Support for TI's OMAP platform (OMAP1/2/3/4).
+
+...
+
+source "arch/arm/plat-omap/Kconfig"
+
+source "arch/arm/mach-omap1/Kconfig"
+
+source "arch/arm/mach-omap2/Kconfig"
+
+...
+
