@@ -1,0 +1,105 @@
+Configuration Details
+
+Question 1:
+
+../arch/arm/boot/compressed/head.S refers to CONFIG_CPU_V6,
+CONFIG_CPU_V6k and CONFIG_CPU-V7. What are the values of these? Where are they found?
+--------------------------
+
+They are found in  ../arch/arm/mm/Kconfig
+They are used to select CPU types dpeending on the architecture selected for tehe kernel.
+
+Below are their values:
+
+# ARMv7
+config CPU_V7
+        bool "Support ARM V7 processor" if ARCH_INTEGRATOR || MACH_REALVIEW_EB || MACH_REALVIEW_PBX
+        select CPU_32v6K
+        select CPU_32v7
+        select CPU_ABRT_EV7
+        select CPU_CACHE_V7
+        select CPU_CACHE_VIPT
+        select CPU_COPY_V6 if MMU
+        select CPU_CP15_MMU
+        select CPU_HAS_ASID if MMU
+        select CPU_PABRT_V7
+        select CPU_TLB_V7 if MMU
+
+# ARMv6k
+config CPU_V6K
+        bool "Support ARM V6K processor" if ARCH_INTEGRATOR || MACH_REALVIEW_EB || MACH_R
+EALVIEW_PBX
+        select CPU_32v6
+        select CPU_32v6K
+        select CPU_ABRT_EV6
+        select CPU_CACHE_V6
+        select CPU_CACHE_VIPT
+        select CPU_COPY_V6 if MMU
+        select CPU_CP15_MMU
+        select CPU_HAS_ASID if MMU
+        select CPU_PABRT_V6
+        select CPU_TLB_V6 if MMU
+
+# ARMv6
+config CPU_V6
+        bool "Support ARM V6 processor" if ARCH_INTEGRATOR || MACH_REALVIEW_EB || MACH_RE
+ALVIEW_PBX
+        select CPU_32v6
+        select CPU_ABRT_EV6
+        select CPU_CACHE_V6
+        select CPU_CACHE_VIPT
+        select CPU_COPY_V6 if MMU
+        select CPU_CP15_MMU
+        select CPU_HAS_ASID if MMU
+        select CPU_PABRT_V6
+        select CPU_TLB_V6 if MMU
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Question 2:
+KERNEL/arch/arm/kernel/head.S does a branch to start_kernel in main.c
+Find the statement b start_kernel. Where is it? Where is main.c?
+
+b  start_kernel   is found in ../arch/arm/kernel/head-common.S as seen below.
+
+...
+THUMB( ldr     sp, [r3, #16]           )
+        str     r9, [r4]                        @ Save processor ID
+        str     r1, [r5]                        @ Save machine type
+        str     r2, [r6]                        @ Save atags pointer
+        bic     r4, r0, #CR_A                   @ Clear 'A' bit
+        stmia   r7, {r0, r4}                    @ Save control register values
+        b       start_kernel
+ENDPROC(__mmap_switched)
+...
+
+
+
+main.c is in KERNEL/init/main.c, it contains start_kernel.h as well as defines a start_kernel() function, as seen below:
+
+..
+mainoid __init start_kernel(void)
+{
+        char * command_line;
+        extern const struct kernel_param __start___param[], __stop___param[];
+
+        /*
+         * Need to run as early as possible, to initialize the
+         * lockdep hash:
+         */
+        lockdep_init();
+        smp_setup_processor_id();
+        debug_objects_early_init();
+
+        /*
+         * Set up the the initial canary ASAP:
+         */
+        boot_init_stack_canary();
+
+        cgroup_init_early();
+
+        local_irq_disable();
+..
+
+

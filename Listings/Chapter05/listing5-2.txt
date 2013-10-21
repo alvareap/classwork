@@ -1,0 +1,12 @@
+piggy.xzkern.S is used instead of piggy.S
+
+
+alex@ubuntu:~/linux-dev/KERNEL/arch/arm/boot/compressed$ cat piggy.xzkern.S 
+	.section .piggydata,#alloc
+	.globl	input_data
+input_data:
+	.incbin	"arch/arm/boot/compressed/piggy.xzkern"
+	.globl	input_data_end
+input_data_end:
+
+

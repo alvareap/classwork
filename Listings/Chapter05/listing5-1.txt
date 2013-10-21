@@ -1,0 +1,36 @@
+Kernel Build Sequence
+
+This build sequence uses different compressed object files from that of the book. For example, piggy.xzkern instead of piggy.gz
+
+make ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- zImage 
+...
+To see full details build your kernel with:
+'make CONFIG_DEBUG_SECTION_MISMATCH=y'
+  GEN     .version
+  CHK     include/generated/compile.h
+  UPD     include/generated/compile.h
+  CC      init/version.o
+  LD      init/built-in.o
+  KSYM    .tmp_kallsyms1.o
+  KSYM    .tmp_kallsyms2.o
+  LD      vmlinux
+  SORTEX  vmlinux
+sort done marker at 92af74
+  SYSMAP  System.map
+  OBJCOPY arch/arm/boot/Image
+  Kernel: arch/arm/boot/Image is ready
+  AS      arch/arm/boot/compressed/head.o
+  XZKERN  arch/arm/boot/compressed/piggy.xzkern
+  AS      arch/arm/boot/compressed/piggy.xzkern.o
+  CC      arch/arm/boot/compressed/misc.o
+  CC      arch/arm/boot/compressed/decompress.o
+  CC      arch/arm/boot/compressed/string.o
+  AS      arch/arm/boot/compressed/lib1funcs.o
+  AS      arch/arm/boot/compressed/ashldi3.o
+  LD      arch/arm/boot/compressed/vmlinux
+  OBJCOPY arch/arm/boot/zImage
+  Kernel: arch/arm/boot/zImage is ready
+
+
+
+

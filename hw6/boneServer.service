@@ -1,0 +1,11 @@
+[Unit]
+Description=User bonescript server
+
+[Service]
+WorkingDirectory=/home/root/ece497/exercises/realtime
+ExecStart=/usr/bin/node boneServer.js
+SyslogIdentifier=boneServer
+EnvironmentFile=-/etc/default/node
+
+[Install]
+WantedBy=multi-user.target
