@@ -1,0 +1,19 @@
+
+The default configuration for busybox is 658692 Bytes large (643.25KB)
+
+
+With only the commands I use is, 584920 Bytes (571.21KB)
+
+By removing all other commands but 'ls' we get 13868 (13.5KB)
+
+Adding httpd bring the filesize to 30488 (29.8KB) [16.3KB larger]
+
+With static linking the filesize was 483960 bytes (472.6KB), yet it still works.
+
+
+
+Running a web server:
+html pages need to be put in the same directory as the where busybox is being run.
+see index.html for details on interessting things one can do with busybox
+
+
