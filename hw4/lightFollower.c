@@ -19,6 +19,7 @@ pins are AIN0 and AIN1
 //Globals
 int controlGPIOs[5];
 char ain[2];
+int curState = 0;
 
 //*****************BEGIN Functions taken from LightTracker******************
 //Sets the pin muxes on the gpios
@@ -90,7 +91,67 @@ mode_gpio_out(gpio1);
 	
 }
 
-//Rotate clockwise
+
+
+void smallStepRotate( int current  ){
+	//Use an 8 state position to decide how to turn
+	
+	switch(current) {
+
+		case 0:
+			gpio_set_value(controlGPIOs[0], 1);
+			gpio_set_value(controlGPIOs[1], 0);
+			gpio_set_value(controlGPIOs[2], 0);
+			gpio_set_value(controlGPIOs[3], 1);
+			break;
+		case 1:
+			gpio_set_value(controlGPIOs[0], 1);
+			gpio_set_value(controlGPIOs[1], 0);
+			gpio_set_value(controlGPIOs[2], 0);
+			gpio_set_value(controlGPIOs[3], 0);
+			break;
+		case 2:
+			gpio_set_value(controlGPIOs[0], 1);
+			gpio_set_value(controlGPIOs[1], 1);
+			gpio_set_value(controlGPIOs[2], 0);
+			gpio_set_value(controlGPIOs[3], 0);
+			break;
+		case 3:
+			gpio_set_value(controlGPIOs[0], 0);
+			gpio_set_value(controlGPIOs[1], 1);
+			gpio_set_value(controlGPIOs[2], 0);
+			gpio_set_value(controlGPIOs[3], 0);
+			break;
+		case 4:
+			gpio_set_value(controlGPIOs[0], 0);
+			gpio_set_value(controlGPIOs[1], 1);
+			gpio_set_value(controlGPIOs[2], 1);
+			gpio_set_value(controlGPIOs[3], 0);
+			break;
+		case 5:
+			gpio_set_value(controlGPIOs[0], 0);
+			gpio_set_value(controlGPIOs[1], 0);
+			gpio_set_value(controlGPIOs[2], 1);
+			gpio_set_value(controlGPIOs[3], 0);
+			break;
+		case 6:
+			gpio_set_value(controlGPIOs[0], 0);
+			gpio_set_value(controlGPIOs[1], 0);
+			gpio_set_value(controlGPIOs[2], 1);
+			gpio_set_value(controlGPIOs[3], 1);
+			break;
+		case 7:
+			gpio_set_value(controlGPIOs[0], 0);
+			gpio_set_value(controlGPIOs[1], 0);
+			gpio_set_value(controlGPIOs[2], 0);
+			gpio_set_value(controlGPIOs[3], 1);
+			break;
+	}	
+	usleep(50000);	
+}		       
+
+
+
 void rotateClock (int current){
 	//Use a 4 state position to decide how to rotate
 	switch(current){
@@ -118,7 +179,7 @@ void rotateClock (int current){
 			gpio_set_value(controlGPIOs[3], 1);
 			break;
 	}
-	usleep(60000);
+	usleep(50000);
 
 }
 //*****************END Functions taken from LightTracker******************
@@ -164,7 +225,6 @@ while(contine){
 				if(min>samples[counter]){
 				minIndex=counter;min=samples[counter];}
 				counter++;
-				
 			}
 		}
 		
@@ -186,24 +246,45 @@ while(contine){
 		minFound = 1;
 	}
 	//Track light source
+	int x =0;
+	int shallowState =0;
 	if(minFound == 1){
 		//Moving Left and Right
-		printf("Ain[0] =%d\tAin[1]=%d\n",  analogIn(ain[0]), analogIn(ain[1]) );
-		if( (analogIn(ain[0]) ) > analogIn(ain[1]) ) {
-			rotateClock(0);
-			rotateClock(1);
-			rotateClock(2);
-			rotateClock(3);
-			printf("Should move Clockwise\n");
+		//printf("Ain[0] =%d\tAin[1]=%d\n",  analogIn(ain[0]), analogIn(ain[1]) );
+		if( (analogIn(ain[1]) ) > analogIn(ain[0]) ) {
+
+			for (x=0; x<1; x++){
+				if (curState+x > 7){
+				  shallowState=1;
+				  smallStepRotate(curState+x-8);
+				} else {
+				  smallStepRotate(curState+x);
+				}
+			}
+			if(shallowState){
+			  curState-=7;
+			} else {
+			  curState+=1;
+			}
+			//printf("Should move Clockwise\n");
 		} else {
-			rotateClock(3);
-			rotateClock(2);
-			rotateClock(1);
-			rotateClock(0);
-			printf("Should move Counterclockwise\n");
+			for (x=0; x<1; x++){
+				if ( curState-x < 0){
+				  shallowState=1;
+				  smallStepRotate(curState-x+8);
+				} else{
+				  smallStepRotate(curState-x);
+				}
+			}
+			if(shallowState){
+			  curState+=7;
+			} else {
+			  curState-=1;
+			}
+			//printf("Should move Counterclockwise\n");
 		}
 		fflush(stdout);
-		usleep(2000000);
+		usleep(10000);
 	}
 }
 return 0;
