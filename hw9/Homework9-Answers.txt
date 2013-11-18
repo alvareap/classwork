@@ -1,0 +1,10 @@
+# This document details how the browser interacts with Boneserver
+
+1.  For example, when when connect() is callex in MatrixLED.js, Boneserver creates creates an i2c socket to the LED matrix which allows for the relay of information.
+
+2.  When an LED is clicked in the browser, LEDclick(i,j) with the coordiates of the click, toggles the value of the LED matrix, and writes to it over i2c.
+
+3.  For example, the .on paramter contains a background-color paramater, which colors the LED.
+
+
+4. In regards to how I will control the two LEDS, I will create a new class onRed, so when the LED gets clicked a second time, the LED matrix disables the green class, and enables the red class. Next, since around line 86 in matrixLED.js the red lines are ignored, I will not ignore the red pixels and  swtich between enabling the green and red pixels at any given LED.
