@@ -5,8 +5,8 @@
 
 if [ "$1" ]; then
 
-  DIR=$2
-  $(mkdir $2)
+  DIR=$1
+  $(mkdir $1)
   
 
 else
@@ -26,3 +26,5 @@ mv tmp.txt rtc-ds1307.service
 
 cp rtc-ds1307.service $DIR
 cp clock_init.sh $DIR
+
+systemctl enable $DIR/rtc-ds1307.service
